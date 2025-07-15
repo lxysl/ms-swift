@@ -184,12 +184,22 @@ class OptimusQwen3Template(Template):
         return encoded
 
     def _data_collator(self, batch: List[Dict[str, Any]], *, padding_to: Optional[int] = None) -> Dict[str, Any]:
-        """Collates batch data."""
+        """Collates batch data and handles pixel_values list->tensor conversion."""
+        # 先处理可能的嵌套 list -> tensor 转换
+        for item in batch:
+            if 'pixel_values' in item and isinstance(item['pixel_values'], list):
+                # 将嵌套的 list 转换为 torch.Tensor
+                item['pixel_values'] = torch.as_tensor(item['pixel_values'])
+            if 'num_patches' in item and isinstance(item['num_patches'], list):
+                # 同样处理 num_patches
+                item['num_patches'] = torch.as_tensor(item['num_patches'])
+        
+        # 调用父类的 _data_collator
         result = super()._data_collator(batch, padding_to=padding_to)
 
         if any('pixel_values' in item for item in batch):
-            all_pixel_values = [item['pixel_values'] for item in batch if 'pixel_values' in item]
-            all_num_patches = [item['num_patches'] for item in batch if 'num_patches' in item]
+            all_pixel_values = [item['pixel_values'] for item in batch if item.get('pixel_values') is not None]
+            all_num_patches = [item['num_patches'] for item in batch if item.get('num_patches') is not None]
             result['pixel_values'] = torch.cat(all_pixel_values, dim=0)
             result['num_patches'] = torch.cat(all_num_patches, dim=0)
 

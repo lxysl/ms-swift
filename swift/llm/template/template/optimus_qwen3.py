@@ -9,7 +9,8 @@ from torchvision import transforms
 from swift.utils import get_env_args
 from ..base import Template
 from ..template_inputs import StdTemplateInputs
-from ..template_meta import MLLMTemplateType, register_template
+from ..constant import MLLMTemplateType
+from ..register import register_template
 from .qwen import QwenTemplateMeta
 
 
@@ -244,3 +245,4 @@ register_template(
         template_cls=OptimusQwen3Template,
     )
 )
+

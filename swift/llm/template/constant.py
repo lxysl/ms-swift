@@ -192,6 +192,9 @@ class MLLMTemplateType:
     gemma3n = 'gemma3n'
     mistral_2503 = 'mistral_2503'
 
+    # 添加 Optimus Qwen3 多模态模板类型
+    optimus_qwen3 = 'qwen3-optimus'
+
 
 class TemplateType(LLMTemplateType, MLLMTemplateType, RMTemplateType):
 

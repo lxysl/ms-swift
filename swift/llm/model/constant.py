@@ -208,6 +208,9 @@ class MLLMModelType:
 
     minimax_vl = 'minimax_vl'
 
+    # 添加 Optimus Qwen3 多模态模型类型
+    optimus_qwen3 = 'qwen3-optimus'
+
     mplug_owl2 = 'mplug_owl2'
     mplug_owl2_1 = 'mplug_owl2_1'
     mplug_owl3 = 'mplug_owl3'

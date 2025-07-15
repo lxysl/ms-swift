@@ -1,13 +1,25 @@
 
-from swift.llm.model.model.qwen import get_model_tokenizer_qwen
-from swift.llm.model.register import register_model
-import torch.nn as nn
-from swift.utils import get_env_args
+# -*- coding: utf-8 -*-
 
-@register_model('qwen3-optimus', 'Qwen/Qwen3-8B')
-def get_model_tokenizer_qwen3_optimus(model_dir, torch_dtype, **kwargs):
+from typing import Any, Dict
+
+import torch.nn as nn
+
+from swift.utils import get_env_args
+from ..utils import ModelInfo
+from ..register import (Model, ModelGroup, ModelMeta, register_model)
+from ..constant import MLLMModelType
+from .qwen import get_model_tokenizer_qwen
+from swift.llm import TemplateType
+
+
+def get_model_tokenizer_qwen3_optimus(model_dir: str,
+                                      model_info: ModelInfo,
+                                      model_kwargs: Dict[str, Any],
+                                      load_model: bool = True,
+                                      **kwargs):
     # 1. Load Qwen3 base model
-    model, tokenizer = get_model_tokenizer_qwen(model_dir, torch_dtype, **kwargs)
+    model, tokenizer = get_model_tokenizer_qwen(model_dir, model_info, model_kwargs, load_model, **kwargs)
 
     # 2. Add special tokens
     special_tokens = {
@@ -46,3 +58,17 @@ def get_model_tokenizer_qwen3_optimus(model_dir, torch_dtype, **kwargs):
     )
 
     return model, tokenizer
+
+
+# 注册 Optimus Qwen3 模型
+register_model(
+    ModelMeta(
+        MLLMModelType.optimus_qwen3,
+        [ModelGroup([
+            Model('Qwen/Qwen3-8B', 'Qwen/Qwen3-8B'),
+            Model('Qwen/Qwen3-0.6B', 'Qwen/Qwen3-0.6B'),
+        ])],
+        template=TemplateType.optimus_qwen3,
+        get_function=get_model_tokenizer_qwen3_optimus,
+        architectures=['Qwen3ForCausalLM'],
+    ))

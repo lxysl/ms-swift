@@ -197,11 +197,15 @@ class OptimusQwen3Template(Template):
         # 调用父类的 _data_collator
         result = super()._data_collator(batch, padding_to=padding_to)
 
-        if any('pixel_values' in item for item in batch):
-            all_pixel_values = [item['pixel_values'] for item in batch if item.get('pixel_values') is not None]
-            all_num_patches = [item['num_patches'] for item in batch if item.get('num_patches') is not None]
+        # 汇总视觉特征（有些 batch 样本可能没有图像，此时列表为空需要跳过）
+        all_pixel_values = [item['pixel_values'] for item in batch if item.get('pixel_values') is not None]
+        all_num_patches = [item['num_patches'] for item in batch if item.get('num_patches') is not None]
+
+        if len(all_pixel_values) > 0:
+            # 只有当至少存在一个样本包含 pixel_values 时，才进行拼接
             result['pixel_values'] = torch.cat(all_pixel_values, dim=0)
-            result['num_patches'] = torch.cat(all_num_patches, dim=0)
+            if len(all_num_patches) > 0:
+                result['num_patches'] = torch.cat(all_num_patches, dim=0)
 
         return result
     

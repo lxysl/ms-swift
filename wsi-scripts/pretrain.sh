@@ -14,6 +14,7 @@ swift pt \
     --dataloader_num_workers 1 \
     --max_length 2048 \
     --output_dir ./outputs/optimus-qwen3-pt \
+    --report_to wandb \
     # > ./outputs/optimus-qwen3-pt/train.log 2>&1
 
     # --per_device_train_batch_size  1 \

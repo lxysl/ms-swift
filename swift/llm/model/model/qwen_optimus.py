@@ -34,10 +34,10 @@ def get_model_tokenizer_qwen3_optimus(model_dir: str,
     tokenizer.add_special_tokens(special_tokens)
     model.resize_token_embeddings(len(tokenizer))
 
-    # 3. Load H-optimus-0 vision encoder
+    # 3. Load H-optimus-1 vision encoder
     import timm
     vision_tower = timm.create_model(
-        "hf-hub:bioptimus/H-optimus-0", 
+        "hf-hub:bioptimus/H-optimus-1", 
         pretrained=True, 
         init_values=1e-5, 
         dynamic_img_size=False
@@ -46,7 +46,7 @@ def get_model_tokenizer_qwen3_optimus(model_dir: str,
 
     # 4. Initialize Adapter (Projector)
     hidden_size = model.config.hidden_size  # Qwen3 hidden size
-    vision_hidden_size = 1536  # H-optimus-0 output size
+    vision_hidden_size = 1536  # H-optimus-1 output size
     downsample_ratio = get_env_args('downsample_ratio', float, 0.5)
 
     model.vision_tower = vision_tower
